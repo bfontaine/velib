@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 
 import os
+import gzip
 import json
 import time
 import logging
@@ -20,9 +21,9 @@ def retrieve():
         return
 
     now = arrow.now().timestamp
-    filename = "%s/%s.json" % (OUTDIR, now)
+    filename = "%s/%s.json.gz" % (OUTDIR, now)
 
-    with open(filename, "w") as f:
+    with gzip.open(filename, "wt") as f:
         json.dump(r.json(), f, sort_keys=True, ensure_ascii=False)
 
     logging.info("wrote %s" % filename)
