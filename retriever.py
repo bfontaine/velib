@@ -15,10 +15,15 @@ URL = "https://opendata.paris.fr/explore/dataset/stations-velib-disponibilites-e
 
 def retrieve():
     os.makedirs(OUTDIR, exist_ok=True)
-    r = requests.get(URL)
+    try:
+        r = requests.get(URL)
+    except requests.packages.urllib3.exceptions.ProtocolError:
+        logging.error("protocol error")
+        return False
+
     if not r.ok:
         logging.error("Cannot get data: %s" % r)
-        return
+        return False
 
     now = arrow.now().timestamp
     filename = "%s/%s.json.gz" % (OUTDIR, now)
@@ -27,11 +32,14 @@ def retrieve():
         json.dump(r.json(), f, sort_keys=True, ensure_ascii=False)
 
     logging.info("wrote %s" % filename)
+    return True
 
 
 def run():
     while True:
-        retrieve()
+        while not retrieve():
+            logging.debug("Trying again in 15 sec")
+            time.sleep(15)
         logging.debug("sleeping for 60s")
         time.sleep(60)
         logging.debug("done sleeping")
