@@ -17,7 +17,7 @@ def retrieve():
     os.makedirs(OUTDIR, exist_ok=True)
     try:
         r = requests.get(URL)
-    except requests.packages.urllib3.exceptions.ProtocolError:
+    except requests.exceptions.ConnectionError:
         logging.error("protocol error")
         return False
 
