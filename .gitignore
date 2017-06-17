@@ -1,2 +1,4 @@
 /data
 *.gz
+*.log
+*.db

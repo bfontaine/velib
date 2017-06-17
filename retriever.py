@@ -1,8 +1,5 @@
 # -*- coding: UTF-8 -*-
 
-import os
-import gzip
-import json
 import time
 import logging
 import argparse
@@ -10,11 +7,14 @@ import argparse
 import requests
 import arrow
 
+import db
+
+db.init_db()
+
 OUTDIR = "data"
 URL = "https://opendata.paris.fr/explore/dataset/stations-velib-disponibilites-en-temps-reel/download/?format=json&timezone=Europe/Berlin"
 
 def retrieve():
-    os.makedirs(OUTDIR, exist_ok=True)
     try:
         r = requests.get(URL)
     except requests.exceptions.ConnectionError:
@@ -25,13 +25,9 @@ def retrieve():
         logging.error("Cannot get data: %s" % r)
         return False
 
-    now = arrow.now().timestamp
-    filename = "%s/%s.json.gz" % (OUTDIR, now)
+    db.save_disponibilities(r.json())
 
-    with gzip.open(filename, "wt") as f:
-        json.dump(r.json(), f, sort_keys=True, ensure_ascii=False)
-
-    logging.info("wrote %s" % filename)
+    logging.info("saved results from %s" % arrow.now())
     return True
 
 
