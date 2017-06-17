@@ -5,7 +5,6 @@ import logging
 import argparse
 
 import requests
-import arrow
 
 import db
 
@@ -27,7 +26,7 @@ def retrieve():
 
     db.save_disponibilities(r.json())
 
-    logging.info("saved results from %s" % arrow.now())
+    logging.info("saved results")
     return True
 
 
