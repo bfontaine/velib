@@ -1,5 +1,6 @@
 appdirs==1.4.3
 arrow==0.10.0
+cachetools==2.0.1
 packaging==16.8
 peewee==2.10.1
 pyparsing==2.2.0
